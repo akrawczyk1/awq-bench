@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Model weights and quantized outputs (Against llama TOS to commit these)
+models/
+quantized/
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.gguf
+
+# HuggingFace cache
+.cache/
+hf_cache/
+
+# Calibration / dataset caches
+*.arrow
+
+# Results - keep small CSVs/JSONs, ignore others
+results/**/*.npy
+results/**/*.pkl
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
