@@ -144,7 +144,7 @@ def main():
 
     # Save the fake-quantized model to disk for the eval phase.
     print(f"\nSaving fake-quantized model to {output_dir}...")
-    model.save_pretrained(output_dir)
+    model.save_pretrained(output_dir, max_shard_size="2GB", safe_serialization=True)
     tokenizer.save_pretrained(output_dir)
     print("Saved.")
 
