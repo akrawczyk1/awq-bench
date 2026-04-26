@@ -33,3 +33,9 @@ results/**/*.pkl
 .vscode/
 .idea/
 .DS_Store
+
+# GPTQModel offload cache and logs
+scripts/gptqmodel_offload/
+**/gptqmodel_offload/
+scripts/gptq_log_*.log
+**/gptq_log_*.log
