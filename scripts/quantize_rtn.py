@@ -14,6 +14,8 @@ import torch
 import torch.nn as nn
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+# Set seed for reproducibility of the quantization process (rounding).
+torch.manual_seed(42)
 
 def quantize_tensor_rtn(weight: torch.Tensor, n_bits: int = 4, group_size: int = 128) -> torch.Tensor:
     """
@@ -111,7 +113,10 @@ def main():
                         help="HF model ID or local path")
     parser.add_argument("--bits", type=int, default=4)
     parser.add_argument("--group-size", type=int, default=128)
-    parser.add_argument("--output-dir", default="../quantized/llama3-8b-rtn-w4-g128")
+    parser.add_argument(
+    "--output-dir",
+    default=str(Path(__file__).parent.parent / "quantized" / "llama3-8b-rtn-w4-g128"),
+    )
     parser.add_argument("--test-prompt", default="The capital of France is")
     args = parser.parse_args()
 
