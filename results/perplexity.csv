@@ -1,0 +1,13 @@
+method,dataset,perplexity,num_tokens,runtime_sec
+rtn,wikitext2,7.5330,8188,24.3
+gptq,wikitext2,7.4981,8188,4.3
+fp16,wikitext2,6.8418,8188,10.5
+fp16,wikitext2,5.5625,16376,23.2
+fp16,wikitext2,5.5625,16376,23.1
+fp16,wikitext2,6.3214,65504,66.7
+fp16,wikitext2,6.1358,288627,789.1
+fp16,c4,8.9858,112585,92.1
+rtn,wikitext2,6.6739,288627,681.2
+rtn,c4,9.8866,112585,86.5
+gptq,wikitext2,6.6065,288627,77.3
+gptq,c4,10.0996,112585,29.9
