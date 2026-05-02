@@ -126,9 +126,62 @@ def load_model_gptq():
 
 
 def load_model_awq():
-    raise NotImplementedError(
-        "TODO"
+    """Load llm-awq's quantized .pt file into a usable model."""
+    import sys
+    # Make llm-awq importable since it has no proper __init__.py
+    LLM_AWQ_PATH = "/home/akraw/llm-awq"
+    if LLM_AWQ_PATH not in sys.path:
+        sys.path.insert(0, LLM_AWQ_PATH)
+
+    from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+    from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_in_model
+    from awq.quantize.quantizer import real_quantize_model_weight
+    from awq.utils.utils import simple_dispatch_model
+
+    base_model_path = (
+        "/home/akraw/.cache/huggingface/hub/"
+        "models--meta-llama--Meta-Llama-3-8B/"
+        "snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920"
     )
+    quant_path = str(
+        PROJECT_ROOT / "quantized" / "llama3-8b-awq-w4-g128" / "awq-model-w4-g128-v2.pt"
+    )
+
+    # Match the config we used for AWQ quantization (Step 2 yesterday).
+    q_config = {"zero_point": True, "q_group_size": 128}
+    w_bit = 4
+
+    print(f"  Building empty model architecture from {base_model_path}...")
+    config = AutoConfig.from_pretrained(base_model_path, trust_remote_code=True)
+    with init_empty_weights():
+        model = AutoModelForCausalLM.from_config(
+            config=config, torch_dtype=torch.float16, trust_remote_code=True
+        )
+
+    print(f"  Replacing Linear layers with empty WQLinear modules...")
+    real_quantize_model_weight(model, w_bit=w_bit, q_config=q_config, init_only=True)
+    model.tie_weights()
+
+    print(f"  Computing device map...")
+    device_map = infer_auto_device_map(
+        model,
+        no_split_module_classes=["LlamaDecoderLayer"],
+    )
+
+    print(f"  Loading quantized checkpoint from {quant_path}...")
+    load_checkpoint_in_model(
+        model,
+        checkpoint=quant_path,
+        device_map=device_map,
+        offload_state_dict=True,
+    )
+
+    print(f"  Dispatching model...")
+    model = simple_dispatch_model(model, device_map=device_map)
+    model.eval()
+
+    tokenizer = AutoTokenizer.from_pretrained(base_model_path, use_fast=False, trust_remote_code=True)
+    return model, tokenizer
 
 
 LOADERS = {
