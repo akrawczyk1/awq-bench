@@ -10,6 +10,18 @@ Usage:
 Results append to results/perplexity.csv.
 """
 
+"""
+Code written with the help of Claude Opus 4.7
+Main usages:
+- Getting syntax and API right for most functions, especially the more complex ones like compute_perplexity() and load_model_awq().
+- Implementing the terminal window progress outputs.
+- Individual function implementations were written by me, but debugged and iterated with the help of the model.
+
+Other citations:
+- Perplexity equation and some code from https://huggingface.co/docs/transformers/perplexity
+
+"""
+
 import argparse
 import math
 import time
@@ -49,7 +61,10 @@ def load_c4_validation_sample(num_samples=256):
 
 @torch.no_grad()
 def compute_perplexity(model, tokenizer, text, window=WINDOW_SIZE, label="dataset", max_tokens=None):
-    """Sliding-window perplexity with non-overlapping stride."""
+    """Sliding-window perplexity with non-overlapping stride.
+    
+       This approach was chosen to match the approach used in Lin et al. 2023, for an apples-to-apples comparison.
+    """
     print(f"  Tokenizing {label}...")
     encodings = tokenizer(text, return_tensors="pt", add_special_tokens=False)
     input_ids = encodings.input_ids[0]
@@ -125,7 +140,13 @@ def load_model_gptq():
 
 
 def load_model_awq():
-    """Load llm-awq's quantized .pt file into a usable model."""
+    """Load llm-awq's quantized .pt file into a usable model.
+    
+    Loading sequence adapted from mit-han-lab/llm-awq's entry.py
+    (https://github.com/mit-han-lab/llm-awq), specifically the
+    --load_quant code path in main().
+    """
+
     import sys
     # Make llm-awq importable since it has no proper __init__.py
     LLM_AWQ_PATH = str(Path.home() / "llm-awq")

@@ -5,6 +5,14 @@ Uses 128 calibration samples from WikiText-2 train, matching the
 AWQ paper's calibration setup for fair comparison.
 """
 
+"""
+Code written with the help of Claude Opus 4.7
+Main usages:
+- Making sure my implementation of the quantization process is correct and matches the expected API of GPTQModel.
+- Implementing the terminal window progress outputs.
+- Debugging the overall flow of loading, quantizing, and saving the model.
+"""
+
 import argparse
 import random
 from pathlib import Path

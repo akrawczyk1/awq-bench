@@ -7,6 +7,14 @@ needing custom int4 kernels. Memory and speed measurements from this baseline
 are not meaningful — use GPTQModel/AWQ for those.
 """
 
+"""Code written with the help of Claude Opus 4.7
+Main usages:
+- Implementing the RTN quantization algorithm correctly, including the grouping logic and per-group scaling
+- Making sure the quantization is applied to the correct layers (all Linear layers except the LM head)
+- Implementing the terminal window progress outputs.
+- Debugging the overall flow of loading, quantizing, and saving the model.
+"""
+
 import argparse
 from pathlib import Path
 
@@ -37,6 +45,7 @@ def quantize_tensor_rtn(weight: torch.Tensor, n_bits: int = 4, group_size: int =
     )
 
     orig_dtype = weight.dtype
+
     # Compute in float32 for numerical stability, cast back at the end.
     w = weight.to(torch.float32)
 
@@ -52,6 +61,7 @@ def quantize_tensor_rtn(weight: torch.Tensor, n_bits: int = 4, group_size: int =
     # Shape: (out_features, num_groups, 1) for broadcasting.
     abs_max = w_grouped.abs().amax(dim=-1, keepdim=True)
     scale = abs_max / q_max
+
     # Avoid division by zero for any all-zero groups.
     scale = scale.clamp(min=1e-8)
 
@@ -88,8 +98,8 @@ def quantize_model_rtn(model: nn.Module, n_bits: int = 4, group_size: int = 128)
             continue
 
         # in_features must be divisible by group_size. LLaMA-3-8B's hidden
-        # sizes (4096, 14336, etc.) are all divisible by 128, so we're fine,
-        # but assert defensively.
+        # sizes (4096, 14336, etc.) are all divisible by 128, so probably fine,
+        # but code defensively.
         if module.weight.shape[1] % group_size != 0:
             print(f"  [skip - bad shape] {name}  shape={tuple(module.weight.shape)}")
             stats["skipped_layers"] += 1

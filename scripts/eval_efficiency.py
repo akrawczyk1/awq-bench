@@ -19,6 +19,17 @@ Usage:
 Results append to results/efficiency.csv.
 """
 
+"""
+Code written with the help of Claude Opus 4.7
+Main usages:
+- Implementing the terminal window progress outputs.
+- Individual function implementations were written by me, but debugged and iterated with the help of the model.
+
+Other citations:
+- Perplexity equation and some code from https://huggingface.co/docs/transformers/perplexity
+
+"""
+
 import argparse
 import gc
 import statistics
