@@ -11,7 +11,7 @@ huggingface-hub>=0.24.0,<1.0
 accelerate
 datasets
 
-# AWQ-specific dependencies (sourced from llm-awq's archived requirements)
+# Required for loading AWQ models (transitive deps from llm-awq's entry.py)
 lm_eval==0.3.0
 sacrebleu
 absl-py

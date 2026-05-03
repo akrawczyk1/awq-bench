@@ -38,8 +38,19 @@ def get_calibration_dataset(num_samples: int = 128, min_length: int = 1000) -> l
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", 
-                        default="/home/akraw/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920")
+    # Auto-discover the local LLaMA-3 snapshot pat.
+    snapshots_dir = Path.home() / ".cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots"
+    default_model = None
+    if snapshots_dir.exists():
+        snapshot_dirs = list(snapshots_dir.iterdir())
+        if snapshot_dirs:
+            default_model = str(snapshot_dirs[0])
+
+    parser.add_argument(
+        "--model",
+        default=default_model,
+        help="Path to local LLaMA-3-8B snapshot. Auto-discovered if not provided.",
+    )
     parser.add_argument("--bits", type=int, default=4)
     parser.add_argument("--group-size", type=int, default=128)
     parser.add_argument("--num-calib-samples", type=int, default=128)
@@ -49,6 +60,11 @@ def main():
     )
     parser.add_argument("--test-prompt", default="The capital of France is")
     args = parser.parse_args()
+    if args.model is None:
+        raise RuntimeError(
+            "Could not auto-discover LLaMA-3-8B snapshot. "
+            "Either run an HF download first, or pass --model with an explicit path."
+        )
 
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)

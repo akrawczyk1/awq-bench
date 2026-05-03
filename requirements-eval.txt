@@ -14,3 +14,23 @@ gptqmodel==6.0.3
 
 # Note: --index-url for PyTorch CUDA 13 wheels:
 # pip install -r requirements-eval.txt --extra-index-url https://download.pytorch.org/whl/cu130
+
+# Required for loading AWQ models (transitive deps from llm-awq's entry.py)
+lm_eval==0.3.0
+sacrebleu
+absl-py
+pypcre
+scikit-learn
+scipy
+joblib
+sqlitedict
+pycountry
+rouge_score
+tqdm-multiprocess
+zstandard
+jsonlines
+pytablewriter
+more-itertools
+jieba
+pybind11
+nltk

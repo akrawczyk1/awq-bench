@@ -76,7 +76,7 @@ def load_model_gptq():
 
 
 def load_model_awq():
-    LLM_AWQ_PATH = "/home/akraw/llm-awq"
+    LLM_AWQ_PATH = str(Path.home() / "llm-awq")
     if LLM_AWQ_PATH not in sys.path:
         sys.path.insert(0, LLM_AWQ_PATH)
 
@@ -85,11 +85,15 @@ def load_model_awq():
     from awq.quantize.quantizer import real_quantize_model_weight
     from awq.utils.utils import simple_dispatch_model
 
-    base_model_path = (
-        "/home/akraw/.cache/huggingface/hub/"
-        "models--meta-llama--Meta-Llama-3-8B/"
-        "snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920"
-    )
+    base_model_path = str(
+    Path.home() / ".cache/huggingface/hub/"
+    "models--meta-llama--Meta-Llama-3-8B/snapshots"
+)
+    # Resolve to the actual snapshot directory (there's exactly one)
+    snapshot_dirs = list(Path(base_model_path).iterdir())
+    if not snapshot_dirs:
+        raise RuntimeError(f"No LLaMA-3 snapshot found in {base_model_path}. Run a quantization script first to trigger download.")
+    base_model_path = str(snapshot_dirs[0])
     quant_path = str(
         PROJECT_ROOT / "quantized" / "llama3-8b-awq-w4-g128" / "awq-model-w4-g128-v2.pt"
     )
