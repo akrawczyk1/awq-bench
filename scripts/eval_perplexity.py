@@ -54,7 +54,7 @@ def compute_perplexity(model, tokenizer, text, window=WINDOW_SIZE, label="datase
     encodings = tokenizer(text, return_tensors="pt", add_special_tokens=False)
     input_ids = encodings.input_ids[0]
     total_tokens = len(input_ids)
-    
+
     if max_tokens is not None and max_tokens < total_tokens:
         input_ids = input_ids[:max_tokens]
         total_tokens = max_tokens
@@ -140,7 +140,7 @@ def load_model_awq():
     base_model_path = str(
     Path.home() / ".cache/huggingface/hub/"
     "models--meta-llama--Meta-Llama-3-8B/snapshots"
-)
+    )
     # Resolve to the actual snapshot directory
     snapshot_dirs = list(Path(base_model_path).iterdir())
     if not snapshot_dirs:
@@ -150,7 +150,7 @@ def load_model_awq():
         PROJECT_ROOT / "quantized" / "llama3-8b-awq-w4-g128" / "awq-model-w4-g128-v2.pt"
     )
 
-    # Match the config we used for AWQ quantization
+    # Must match the confi used for quantization.
     q_config = {"zero_point": True, "q_group_size": 128}
     w_bit = 4
 

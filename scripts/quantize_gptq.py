@@ -38,7 +38,7 @@ def get_calibration_dataset(num_samples: int = 128, min_length: int = 1000) -> l
 
 def main():
     parser = argparse.ArgumentParser()
-    # Auto-discover the local LLaMA-3 snapshot pat.
+    # Auto-discover the local LLaMA-3 snapshot path.
     snapshots_dir = Path.home() / ".cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots"
     default_model = None
     if snapshots_dir.exists():
@@ -93,7 +93,7 @@ def main():
     model.save(str(output_dir))
     print("Saved.")
 
-    # Sanity check: load back and generate
+    # Sanity check: Reload from disk and generate to verify the saved checkpoint is functional.
     print(f"\nReloading saved model for sanity check...")
     del model
     torch.cuda.empty_cache()
