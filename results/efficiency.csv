@@ -1,3 +1,4 @@
 method,load_peak_mb,steady_mb,prefill_tokens_per_sec,gen_latency_sec,gen_tokens_per_sec
-gptq,5776,5733,3666.9,0.25,1014.5
-awq,5810,5810,5207.0,13.89,18.4
+gptq,5776,5733,3663.8,23.89,10.7
+awq,5810,5810,5197.0,14.72,17.4
+fp16,9339,9339,1339.2,243.17,1.1

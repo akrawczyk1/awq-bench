@@ -171,14 +171,20 @@ def measure_prefill_throughput(model, tokenizer):
 def measure_generation_latency(model, tokenizer):
     """Wall-clock for greedy generation of 256 tokens from a fixed prompt.
 
-    Different model wrappers have different generate APIs. We try the
-    standard transformers-style call first, then fall back if needed.
+    Forces exactly GENERATION_LENGTH tokens via min_new_tokens to avoid
+    early-termination via EOS, which would inflate measured throughput.
     """
     inputs = tokenizer(PROMPT, return_tensors="pt", add_special_tokens=False).input_ids.to(DEVICE)
 
+    gen_kwargs = dict(
+        max_new_tokens=GENERATION_LENGTH,
+        min_new_tokens=GENERATION_LENGTH,
+        do_sample=False,
+    )
+
     # Warmup
     for _ in range(WARMUP_RUNS):
-        _ = model.generate(inputs, max_new_tokens=GENERATION_LENGTH, do_sample=False)
+        _ = model.generate(inputs, **gen_kwargs)
         torch.cuda.synchronize()
 
     # Measure
@@ -186,13 +192,12 @@ def measure_generation_latency(model, tokenizer):
     for _ in range(NUM_RUNS):
         torch.cuda.synchronize()
         t0 = time.time()
-        out = model.generate(inputs, max_new_tokens=GENERATION_LENGTH, do_sample=False)
+        _ = model.generate(inputs, **gen_kwargs)
         torch.cuda.synchronize()
         times.append(time.time() - t0)
 
     avg_time = statistics.mean(times)
-    tokens_generated = GENERATION_LENGTH
-    return avg_time, tokens_generated / avg_time
+    return avg_time, GENERATION_LENGTH / avg_time
 
 
 def append_result(method, load_peak_mb, steady_mb, prefill_tps, gen_latency, gen_tps):

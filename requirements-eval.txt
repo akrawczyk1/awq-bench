@@ -1,0 +1,16 @@
+# Used to load and evaluate already-quantized models.
+# Uses transformers 5.6.2 because GPTQModel's saved checkpoints (and the
+# RTN saved model configs) reference transformers 5.x classes that 4.x
+# cannot deserialize.
+
+torch==2.11.0+cu130
+torchvision==0.26.0+cu130
+transformers==5.6.2
+tokenizers>=0.22,<0.23
+huggingface-hub>=1.0,<2.0
+accelerate
+datasets
+gptqmodel==6.0.3
+
+# Note: --index-url for PyTorch CUDA 13 wheels:
+# pip install -r requirements-eval.txt --extra-index-url https://download.pytorch.org/whl/cu130

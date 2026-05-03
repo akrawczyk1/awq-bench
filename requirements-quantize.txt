@@ -1,0 +1,35 @@
+# Used to produce quantized models from the FP16 LLaMA-3-8B base model.
+# AWQ quantization specifically requires transformers 4.47.1 because
+# llm-awq's calibration code is incompatible with the transformers 5.x
+# RoPE shape conventions used in LLaMA-3's grouped-query attention.
+
+torch==2.11.0+cu130
+torchvision==0.26.0+cu130
+transformers==4.47.1
+tokenizers>=0.21,<0.22
+huggingface-hub>=0.24.0,<1.0
+accelerate
+datasets
+
+# AWQ-specific dependencies (sourced from llm-awq's archived requirements)
+lm_eval==0.3.0
+sacrebleu
+absl-py
+pypcre
+scikit-learn
+scipy
+joblib
+sqlitedict
+pycountry
+rouge_score
+tqdm-multiprocess
+zstandard
+jsonlines
+pytablewriter
+more-itertools
+jieba
+pybind11
+nltk
+
+# Note: --index-url for PyTorch CUDA 13 wheels:
+# pip install -r requirements-quantize.txt --extra-index-url https://download.pytorch.org/whl/cu130

@@ -7,3 +7,7 @@ gptq,wikitext2,6.6065,288627,77.3
 gptq,c4,10.0996,112585,29.9
 awq,wikitext2,6.5312,288627,58.2
 awq,c4,9.6866,112585,23.0
+gptq,wikitext2,6.9752,4094,2.9
+rtn,wikitext2,6.9242,4094,16.1
+fp16,wikitext2,6.1582,4094,7.0
+awq,wikitext2,6.8536,4094,2.0
