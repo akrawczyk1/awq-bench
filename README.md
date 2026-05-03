@@ -241,4 +241,4 @@ WikiText-2: full test split (288,627 tokens). C4: 256-sample slice of validation
 | GPTQ   | 5,733               | 3,663.8         | 10.7               | 23.89                  |
 | AWQ    | 5,810               | 5,197.0         | 17.4               | 14.72                  |
 
-Prefill: 2048-token forward pass. Generation: 256-token greedy decode from a fixed prompt. Each measurement averaged over 3 runs after 1 warmup. RTN omitted from efficiency benchmarks (stored as fake-quantized FP16; efficiency identical to FP16 baseline).
+Prefill: 2048-token forward pass. Generation: 256-token greedy decode from a fixed prompt. Each measurement averaged over 3 runs after 1 warmup. RTN omitted from efficiency benchmarks (stored as fake-quantized FP16; efficiency identical to FP16 baseline). RTN was not included because we didn't implement a "true" RTN algorithm; we simulated it for the purposes of perplexity analysis.
